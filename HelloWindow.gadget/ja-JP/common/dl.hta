@@ -1,0 +1,48 @@
+<script type="text/javascript" src="md5.js"></script>
+<script type="text/javascript" src="checksum.js"></script>
+<script type="text/javascript" src="http.js"></script>
+<script type="text/javascript"><!--
+oShell = new ActiveXObject("Shell.Application");
+resource = "http://";
+
+window.onload = function (){
+
+	var oForm = document.createElement('form');
+	oForm.onsubmit = function (){
+		getDownloadFile(resource , filepath);
+		setTimeout(function (){
+			if (Status == 0)
+				arguments.callee;
+		} , 5);
+		var buf = resource.split("/");
+		val = checksum(filepath+"\\"+buf.pop());
+		alert(val);
+		return false;
+	}
+
+	var oButton_1 = document.createElement('input');
+	oButton_1.type = "button";
+	oButton_1.onclick = function (){
+		resource = (buf = prompt('Input Download Resource URL' , resource)) ? buf : resource ;
+	}
+	oButton_1.value = "Set URL";
+
+	var oButton_2 = document.createElement('input');
+	oButton_2.type = "button";
+	oButton_2.onclick = function (){
+		oDialog = oShell.BrowseForFolder(0 , "Choose Folder" , 0x10);
+		filepath = (oDialog) ? oDialog.self.path : filepath ;
+	}
+	oButton_2.value = "Set Dir";
+
+	var oButton_3 = document.createElement('input');
+	oButton_3.type = "submit";
+
+	oForm.appendChild(oButton_1);
+	oForm.appendChild(oButton_2);
+	oForm.appendChild(oButton_3);
+	document.body.appendChild(oForm);
+
+}
+
+//--></script>

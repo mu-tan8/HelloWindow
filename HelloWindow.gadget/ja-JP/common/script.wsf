@@ -1,0 +1,169 @@
+﻿<?XML version="1.0" standalone="yes" ?>
+<package>
+	<job id="JScript">
+		<?job debug="true" ?>
+		<runtime>
+			<named name="P" helpstring="POPUPのタイトルに表示される文字" type="string" required="true" />
+			<named name="T" helpstring="POPUPが表示されている時間" type="string" />
+			<named name="S" helpstring="POPUPの形状を示す数値" type="string" />
+			<description>
+POPUPを表示します。メッセージは標準入力された文字列が使用されます。
+POPUPの返り値は標準出力されます。
+			</description>
+			<example>
+Example:
+
+	echo test | cscript script.wsf /P:script /T:0 /S:48 //Nologo
+</example>
+		</runtime>
+		<script language="JScript"><![CDATA[//<!--
+
+			cmdQArgs = WScript.Arguments.Named;
+			cmdArgs = WScript.Arguments.Unnamed;
+			WshShell = WScript.CreateObject("WScript.Shell");
+
+			if (cmdQArgs.Exists("P")){
+				mes = [];title = ""; wait = style = 0;buf = "";
+
+				wait = (cmdQArgs.Item("T")) ? parseInt(cmdQArgs.Item("T")) : 0 ;
+				title = (cmdQArgs.Item("P")) ? cmdQArgs.Item("P") : "" ;
+				style = (cmdQArgs.Item("S")) ? parseInt(cmdQArgs.Item("S")) : 0 ;
+
+				for (a = 0;!WScript.StdIn.AtEndOfLine;a++){
+					mes[a] = WScript.StdIn.ReadLine();
+				}
+
+				WScript.StdOut.Write( WshShell.Popup(mes.join("\n") , wait , title , style));
+/*
+				for (a = 0;a < cmdArgs.length;a++){
+					mes[a] = cmdArgs.Item(a);
+				}
+
+				WScript.StdOut.Write( WshShell.Popup(mes.join("\n") , wait , title , style) );
+*/
+				WScript.StdIn.Close();
+				WScript.StdOut.Close();
+
+			}else if (cmdQArgs.length < 1 && cmdArgs.length > 0){
+				mes = [];
+
+				for (a = 0;a < cmdArgs.length;a++){
+					mes[a] = cmdArgs.Item(a);
+				}
+
+				WScript.Echo(mes.join("\n"));
+
+			}
+
+			WScript.Quit();
+		//-->]]></script>
+	</job>
+	<job id="MsgBox">
+		<?job debug="true"?>
+		<runtime>
+			<named name="M" helpstring="MsgBoxのタイトルに表示される文字" type="string" required="true" />
+			<named name="B" helpstring="MsgBoxの形状を示す数値" type="string" />
+			<description>
+MsgBoxを表示します。メッセージは標準入力された文字列が使用されます。
+MsgBoxの返り値は標準出力されます。
+			</description>
+			<example>
+Example:
+
+	echo test | cscript script.wsf /M:script /B:32 //Nologo //job:MsgBox
+</example>
+		</runtime>
+		<script language="VBScript"><![CDATA['<!--
+
+			Dim Mes , Title , Style :
+			Mes = "" :
+			Title = "" :
+			Style = 0 :
+
+			Set CmdQArgs = WScript.Arguments.Named :
+			Set WshShell = WScript.CreateObject("WScript.Shell") :
+
+			If CmdQArgs.Exists("M") Then
+
+				If CmdQArgs.Item("M") <> "" Then
+					Title = CmdQArgs.Item("M") :
+				Else
+					Title = "" :
+				End If
+
+
+				If CBool(CmdQArgs.Item("B")) Then
+					Style = Int(CmdQArgs.Item("B")) :
+				Else
+					Style = 0 :
+				End If
+
+				Do While Not WScript.StdIn.AtEndOfLine
+					Mes = Mes & WScript.StdIn.ReadLine :
+				Loop
+
+				WScript.StdOut.Write MsgBox(Mes , Style , Title) :
+				WScript.StdIn.Close
+				WScript.StdOut.Close
+
+			End If
+
+			WScript.Quit
+
+		'-->]]></script>
+	</job>
+	<job id="InputBox">
+		<?job debug="true"?>
+		<runtime>
+			<named name="I" helpstring="InputBoxのタイトルに表示される文字" type="string" required="true" />
+			<named name="D" helpstring="InputBoxの初期値" type="string" />
+			<description>
+InputBoxを表示します。メッセージは標準入力された文字列が使用されます。
+InputBoxの返り値は標準出力されます。
+			</description>
+			<example>
+Example:
+
+	echo Input Value | cscript script.wsf /I:script /D:strings //Nologo //job:InputBox
+</example>
+		</runtime>
+		<script language="VBScript"><![CDATA['<!--
+
+			Dim Mes , Title , Text :
+			Mes = "" :
+			Title = "" :
+			Text = "" :
+
+			Set CmdQArgs = WScript.Arguments.Named :
+			Set WshShell = WScript.CreateObject("WScript.Shell") :
+
+			If CmdQArgs.Exists("I") Then
+
+				If CmdQArgs.Item("I") <> "" Then
+					Title = CmdQArgs.Item("I") :
+				Else
+					Title = "" :
+				End If
+
+
+				If CmdQArgs.Item("D") <> "" Then
+					Text = CmdQArgs.Item("D") :
+				Else
+					Text = "" :
+				End If
+
+				Do While Not WScript.StdIn.AtEndOfLine
+					Mes = Mes & WScript.StdIn.ReadLine :
+				Loop
+
+				WScript.StdOut.Write InputBox(Mes , Title , Text) :
+				WScript.StdIn.Close
+				WScript.StdOut.Close
+
+			End If
+
+			WScript.Quit
+
+		'-->]]></script>
+	</job>
+</package>

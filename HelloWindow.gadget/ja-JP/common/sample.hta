@@ -1,0 +1,26 @@
+<script type="text/javascript"><!--
+
+Str = prompt("","");
+Str = (Str) ? Str : "" ;
+
+	oShell = new ActiveXObject("WScript.Shell");
+	oExec = oShell.Exec("cscript.exe script.wsf /P:script //Nologo");
+	oExec.StdIn.WriteLine(Str);
+	oExec.StdIn.Close();
+
+	setTimeout(function (){
+		if (oExec.Status == 0){
+			var i = 0 , mes = [];
+			while (!oExec.StdOut.AtEndOfStream){
+				mes[i] = oExec.StdOut.ReadLine();
+				i++;
+			}
+			oExec.StdOut.Close();
+			document.write(mes.join("<br />\n"));
+			setTimeout(arguments.callee,100);
+		}else{
+			alert("Quit");
+		}
+},100);
+
+//--></script>

@@ -1,0 +1,180 @@
+﻿<html>
+<head>
+<title>伺。窓 の設定</title>
+<style><!--
+body{
+	width:278px;
+	height:360px;
+	font:12px "メイリオ","Segoe UI";
+}
+--></style>
+<script><!--
+Home = System.Gadget.path + "\\ja-JP";
+
+function init(){
+	document.basic.homePath.value = (homeDir = System.Gadget.Settings.readString("homePath")) ? homeDir : Home + "\\ghost" ;
+	document.basic.balloonPath.value = (balloonDir = System.Gadget.Settings.readString("balloonPath")) ? balloonDir : Home + "\\balloon" ;
+	document.external.fieldPath.value = (fieldDir = System.Gadget.Settings.readString("fieldPath")) ? fieldDir : Home + "\\field" ;
+	document.misc.username.value = System.Gadget.Settings.readString("userName");
+	document.misc.nickname.value = System.Gadget.Settings.readString("nickName");
+
+	userSex = (Sex = System.Gadget.Settings.readString("userSexual")) ? Sex : 2 ;
+	if (document.misc.sex[userSex]){document.misc.sex[userSex].checked = true};
+
+	mode = (stat = System.Gadget.Settings.readString("statUndock")) ? stat : 0 ;
+	if (document.external.statUndock[mode]){document.external.statUndock[mode].checked = true};
+
+	System.Gadget.onSettingsClosing = CloseProccess;
+}
+
+function CloseProccess(event){
+
+	if (event.closeAction == event.Action.commit){
+
+		if (document.basic.homePath.value){
+			homeDir = document.basic.homePath.value;
+		}else{
+			homeDir = Home + "\\ghost";
+		}
+
+		if (document.basic.balloonPath.value){
+			balloonDir = document.basic.balloonPath.value;
+		}else{
+			balloonDir = Home + "\\balloon";
+		}
+
+		if (document.external.fieldPath.value){
+			fieldDir = document.external.fieldPath.value;
+		}else{
+			fieldDir = Home + "\\field";
+		}
+
+		if (document.misc.username.value){
+			userName = document.misc.username.value;
+		}else{
+			userName = "";
+		}
+
+		if (document.misc.nickname.value){
+			nickName = document.misc.nickname.value;
+		}else{
+			nickName = document.misc.username.value;
+		}
+
+		for (f = 0;f < document.misc.sex.length;f++){
+			if (document.misc.sex[f].checked){
+				userSex = f;
+			}
+		}
+
+		for (w = 0;w < document.external.statUndock.length;w++){
+			if (document.external.statUndock[w].checked){
+				mode = w;
+			}
+		}
+
+
+		System.Gadget.Settings.writeString("homePath" , homeDir );
+		System.Gadget.Settings.writeString("balloonPath" , balloonDir );
+		System.Gadget.Settings.writeString("fieldPath" , fieldDir );
+		System.Gadget.Settings.writeString("userName" , userName );
+		System.Gadget.Settings.writeString("nickName" , nickName );
+		System.Gadget.Settings.writeString("userSexual" , userSex);
+		System.Gadget.Settings.writeString("statUndock" , mode);
+
+	}
+	event.cancel = false;
+}
+
+function init_clr(){
+	for (f=0;f < document.forms.length;f++){
+		document.forms[f].style.display = "none";
+	}
+}
+
+function baseSetting(){
+	init_clr();
+	basic.style.display = "block";
+}
+
+function refHomeFolder(){
+	oItem = System.Shell.chooseFolder("choose Ghosts and Shells root Folder",0);
+	if (oItem.isFolder){
+		basic.homePath.value = oItem.path;
+	}
+}
+
+function refBalloonFolder(){
+	oItem = System.Shell.chooseFolder("choose Ghosts and Shells root Folder",0);
+	if (oItem.isFolder){
+		basic.balloonPath.value = oItem.path;
+	}
+}
+
+function madobeConfig(){
+	init_clr();
+	document.external.style.display = "block";
+}
+
+function refFieldFolder(){
+	oItem = System.Shell.chooseFolder("choose Window and Frames root Folder",0);
+	if (isFolder){
+		document.external.fieldPath.value = oItem.path;
+	}
+}
+
+function other(){
+	init_clr();
+	misc.style.display = "block";
+}
+
+//--></script>
+</head>
+<body onload="init();baseSetting()">
+<button onclick="baseSetting()">伺か互換</button>
+<button onclick="madobeConfig()">伺。窓 拡張</button>
+<button onclick="other()">その他</button>
+
+<form name="basic">
+<fieldset>
+<legend>ゴースト／シェル</legend>
+<label for="_homepath">フォルダ:</label>
+<input name="homePath" id="_homepath" />
+<button onclick="refHomeFolder()">参照...</button>
+</fieldset>
+<fieldset>
+<legend>バルーン</legend>
+<label for="_balloonpath">フォルダ:</label>
+<input name="balloonPath" id="_balloonpath" />
+<button onclick="refBalloonFolder()">参照...</button>
+</fieldset>
+</form>
+
+<form name="external">
+<fieldset>
+<legend>アンドック状態での動作</legend>
+<input type="radio" name="statUndock" value="none" id="_none" /><label for="_none">縮小モードのまま動作する（既定）</label><br />
+<input type="radio" name="statUndock" value="full" id="_full" /><label for="_full">展開モードで動作する</label><br />
+<input type="radio" name="statUndock" value="standalone" id="_standalone" /><label for="_standalone">フレーム無しで動作する</label><br />
+</fieldset>
+<fieldset>
+<legend>背景とフレーム</legend>
+<label for="_fieldPath">フォルダ:</label>
+<input name="fieldPath" id="_fieldPath" />
+<button onclick="refFieldFolder()">参照...</button>
+</fieldset>
+</form>
+
+<form name="misc">
+<fieldset>
+<legend>ユーザプロフィール</legend>
+<label for="_username">ユーザ名：</label><input name="username" id="_username" /><br />
+<label for="_nickname">ニックネーム：</label><input name="nickname" id="_nickname" /><br />
+性別：<input type="radio" name="sex" value="man" id="_man" /><label for="_man">男</label>
+<input type="radio" name="sex" value="woman" id="_woman" /><label for="_woman">女</label>
+<input type="radio" name="sex" value="unknown" id="_unknown" /><label for="_unknown">設定なし</label>
+</fieldset>
+</form>
+
+</body>
+</html>

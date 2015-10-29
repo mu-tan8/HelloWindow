@@ -1,0 +1,85 @@
+﻿<html>
+<head>
+<title>伺。窓　―ふきだし</title>
+<style><!--
+.oBalloon{
+	font:10px "メイリオ" , "Segoe UI";
+}
+--></style>
+<script><!--
+
+function init(){
+	oDocument = System.Gadget.document;
+
+	document.body.style.cssText = oDocument.getElementById("oMes").style.cssText;
+	document.body.style.display = "";
+	document.getElementById("oBalloon").innerHTML = oDocument.getElementById("oMes").innerHTML;
+	AITalk(oDocument.getElementById("oMes").innerText);
+	oScr = document.createElement('script');
+	oScr.text = document.getElementById('script').innerHTML;
+	document.body.appendChild(oScr);
+}
+
+
+function AITalk(Mess){
+	var i = 0;
+	document.getElementById('oBalloon').innerText = "";
+
+	Mess = Mess.replace(/\\n/g , String.fromCharCode(0x10 , 0));
+	Mess = Mess.replace(/\\w9/g , String.fromCharCode(0x9 , 0));
+	Mess = Mess.replace(/\\c/g , String.fromCharCode(0x18 , 0));
+	Mess = Mess.replace(/\\e/g , String.fromCharCode(0x1b , 0));
+
+	var myMess = Mess;
+
+	setTimeout(function(){
+		var myfunc = arguments.callee;
+
+		switch (myMess.substr(i , 1)){
+			case String.fromCharCode(0x10):	//\n
+				document.getElementById('oBalloon').innerText += "<br />";
+				i++;
+				document.getElementById('oBalloon').innerText += myMess.substr(i , 1);
+				i++;
+				if (myMess.length >= i){setTimeout(function (){myfunc(myMess)} , 30)};
+				break;
+			case String.fromCharCode(0x9):	//\w9
+				i++;
+				document.getElementById('oBalloon').innerText += myMess.substr(i , 1);
+				i++;
+				if (myMess.length >= i){setTimeout(function (){myfunc(myMess)} , 450)};
+				break;
+			case String.fromCharCode(0x18):	//\c
+				i++;
+				document.getElementById('oBalloon').innerText = "";
+				i++;
+				if (myMess.length >= i){setTimeout(function (){myfunc(myMess)} , 30)};
+				break;
+			case String.fromCharCode(0x1b):	//\e
+				break;
+			default:
+				document.getElementById('oBalloon').innerText += myMess.substr(i , 1);
+				i++;
+				if (myMess.length >= i){setTimeout(function (){myfunc(myMess)} , 30)};
+				break;
+		}
+	} , 30);
+
+}
+
+//--></script>
+</head>
+<body onload="init()">
+<span id="oBalloon">
+ユーザーさん。何か御用ですか？<br>
+<br />
+<a href="javascript:void(0)">閉じる</a><br />
+<br />
+<font color="red">※これは開発中のイメージです。</font>
+</span><!--
+<img src="balloon/madobe/online.png" style="position:absolute;bottom:8px;left:8px" />
+<img src="balloon/madobe/sstp.png" style="position:absolute;bottom:20px;left:45px" />
+<img src="balloon/madobe/arrow0.png" style="position:absolute;top:12px;right:18px" />
+<img src="balloon/madobe/arrow1.png" style="position:absolute;bottom:12px;right:18px" />
+--></body>
+</html>

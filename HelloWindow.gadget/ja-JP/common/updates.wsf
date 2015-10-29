@@ -1,0 +1,86 @@
+﻿<?XML version="1.0" standalone="yes"?>
+<package>
+	<job>
+		<?job debug="true" ?>
+		<script language="JScript" src="base64.js" />
+		<script language="JScript" src="md5.js" />
+		<script language="JScript"><![CDATA[//<!--
+			var utena = {};
+			utena.base64encode = function (data) {
+			   var xml_dom = new ActiveXObject("Microsoft.XMLDOM");
+			   xml_dom.loadXML('<?xml version="1.0" ?> <root/>');
+			   xml_dom.documentElement.setAttribute("xmlns:dt", "urn:schemas-microsoft-com:datatypes");
+			   var node1 = xml_dom.createElement("file1");
+			   node1.dataType = "bin.base64";
+			   node1.nodeTypedValue=data;
+			   xml_dom.documentElement.appendChild(node1);
+			  return node1.text;
+			}
+
+			cmdArgs = WScript.Arguments;
+			if (cmdArgs.length < 1){
+				oWSh.Popup("running script failed!",0,"Error",16);
+				WScript.Quit();
+			};
+
+
+			var oFS = WScript.CreateObject("Scripting.FileSystemObject");
+
+			curPath = cmdArgs(0);
+
+			if (!oFS.FolderExists(curPath)){
+				WScript.Quit();
+			};
+
+			oTS = oFS.OpenTextFile(curPath + "\\updates2.dau" , 2 , true);
+
+			(function dscan(path){
+
+				if (!oFS.FolderExists(path)){ return false };
+				var eCD = new Enumerator(oFS.GetFolder(path).SubFolders);
+
+				var eCF = new Enumerator(oFS.GetFolder(path).Files);
+				while (!eCF.atEnd()){
+					var oFile = eCF.item();
+					if (oFile.Name == "updates2.dau"){
+						break;
+					}
+
+					var oADDB = WScript.CreateObject("ADODB.Stream");
+					WScript.Sleep(10);
+
+					oADDB.Type = 1;
+					oADDB.Open();
+					oADDB.LoadFromFile(oFile.Path);
+					VBData = oADDB.Read(-1);
+					var data = base64decode(utena.base64encode(VBData));
+					oADDB.Close();
+					hash = MD5_hexhash(data);
+					oADDB = null;
+
+					var t = oFile.Path.indexOf(curPath);
+					if (t >= 0){
+						t += curPath.length;
+						var sDir = oFile.Path.substring(t);
+					}
+					buf = sDir.split("\\");
+					buf.shift();
+					str = buf.join("/");
+					WScript.Echo(str);
+
+					oTS.WriteLine(""+str+" "+hash+" ");
+					eCF.moveNext();
+				}
+
+				while (!eCD.atEnd()){
+					childDir = eCD.item();
+					eCD.moveNext();
+					WScript.Sleep(10);
+					dscan(childDir.Path);
+				}
+
+			})(curPath);
+
+		//-->]]></script>
+	</job>
+</package>

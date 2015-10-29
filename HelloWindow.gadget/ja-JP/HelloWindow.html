@@ -1,0 +1,42 @@
+﻿<html>
+<head>
+<title>伺。窓</title>
+<style type="text/css"><!--
+body{
+	width:130px;
+	height:120px;
+	margin:0;
+	overflow:hidden;
+}
+#oGadget{
+	margin-top:20px;
+	width:130px;
+	font:12px "メイリオ","Segoe UI";
+	vertical-align:middle;
+	text-align:center;
+}
+
+.abs{
+	position:absolute;
+}
+
+--></style>
+<script src="common/md5.js"></script>
+<script src="common/checksum.js"></script>
+<script src="common/http.js"></script>
+<script src="common/surface.js"></script>
+<script src="common/balloon.js"></script>
+<script src="common/sash.js"></script>
+<script src="common/HelloWindow.js"></script>
+</head>
+<body ondragenter="event.returnValue = false" ondragover="event.returnValue = false" ondrop="getDropedFile()">
+<g:background id="wgBackground">
+<span id="oGadget">
+ここに伺かの<br>
+キャラクターが<br>
+現れる筈です。
+</span>
+<div id="oMes" style="display:none;"></div>
+</g:background>
+</body>
+</html>

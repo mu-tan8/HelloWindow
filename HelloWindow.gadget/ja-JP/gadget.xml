@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<gadget>
+	<name>伺。窓</name>
+	<version>1.0.0</version>
+	<author name="mu-tanθ">
+		<info url="mutan8.exout.net" />
+	</author>
+	<copyright>(C) 2010</copyright>
+	<description>『任意たん』でお馴染みの伺キャラ（ゴースト）たちがあなたのデスクトップへお手伝い（？）に伺います！</description>
+	<icons>
+		<icon width="48" height="48" src="common/img/thumbnail.png" />
+	</icons>
+	<hosts>
+		<host name="sidebar">
+			<base type="HTML" apiVersion="1.0.0" src="HelloWindow.html" />
+			<permissions>Full</permissions>
+			<platform minPlatformVersion="1.0" />
+		</host>
+	</hosts>
+</gadget>

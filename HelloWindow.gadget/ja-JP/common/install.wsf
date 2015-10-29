@@ -1,0 +1,66 @@
+﻿<?XML version="1.0" standalone="yes" ?>
+<package>
+	<job id="Default">
+		<?job debug="true" ?>
+		<script language="JScript" src="ghost-installer.js" />
+		<script language="JScript"><![CDATA[//<!--
+
+			cmdArgs = WScript.Arguments;
+			if (cmdArgs.length < 1){
+				oWSh.Popup("running script failed!",0,"Error",16);
+				WScript.Quit();
+			};
+
+			destPath = oFS.GetParentFolderName(WScript.ScriptFullName);		//デフォルトのインストール先（このスクリプトのある場所）
+
+			if (!oFS.FileExists( cmdArgs(0) )){
+				oWSh.Popup("file not found!\n" + cmdArgs(0),0,"Error",16);
+				WScript.Quit();
+			}
+
+			oXML.async = false;
+			oXML.load(destPath+"\\infodb.xml");
+
+			oTS = oFS.OpenTextFile(cmdArgs(0),1,false);
+
+			insText = [];
+
+			for (l = 0; !oTS.AtEndOfLine ; l++){
+				insText[l] = oTS.ReadLine();
+			}
+
+			oTS.Close();
+
+			srcPath = oFS.GetFile(cmdArgs(0)).ParentFolder;			//install.txtのあるフォルダへのパス
+
+
+			insType = insText.keyEntry("type");
+			insName = insText.keyEntry("name");
+			insDir = insText.keyEntry("directory");
+
+
+			if (insType.match(/ghost/)){
+				mode = 1;
+			}else if (insType.match(/balloon/)){
+				mode = 2;
+			}else if (insType.match(/supplement/)){
+				mode = 3;
+			}else if (insType.match(/shell/)){
+				mode = 4;
+			}else{
+				mode = 0;
+			}
+
+			constructValidate(mode);
+			mes = execInstall(mode);
+
+			if (mes){
+				oWSh.Popup(mes,0,"Warning",48);
+			}else{
+				oWSh.Popup('Ghost "'+ insName +'" \nInstalled Successfully!',0,"information",64);
+				oXML.save(destPath+"\\infodb.xml");
+			}
+
+		//-->]]></script>
+	</job>
+</package>
